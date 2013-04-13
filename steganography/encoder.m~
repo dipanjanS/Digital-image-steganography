@@ -1,0 +1,64 @@
+
+function [Output] = encoder (Input,Encoder)
+    
+    I2=imnoise(Input,'speckle',0.01);
+    J=dither(I2);
+    
+    k=size(J);
+    m=1;
+    n=1;
+    X=zeros(2*k(1),2*k(2));
+    Y=zeros(2*k(1),2*k(2));
+    
+    for i=1:k(1)
+        for j=1:k(2)
+            if(J(i,j)==1)%black
+                %share 1
+                X(m,n)=0;
+                X(m+1,n)=1;
+                X(m,n+1)=1;
+                X(m+1,n+1)=0;
+                %share 2
+                Y(m,n)=0;
+                Y(m+1,n)=1;
+                Y(m,n+1)=1;
+                Y(m+1,n+1)=0;
+            else %white
+                %share 1
+                X(m,n)=0;
+                X(m+1,n)=1;%1
+                X(m,n+1)=1;%1
+                X(m+1,n+1)=0;
+                %share 2
+                Y(m,n)=1;%1
+                Y(m+1,n)=0;
+                Y(m,n+1)=0;
+                Y(m+1,n+1)=1;%1
+            end
+            n=n+2;
+        end
+        n=1;
+        m=m+2;
+    end
+    %printmat(J);
+    %x=histeq(X);
+    
+I=imread('share1.jpg');
+I2=imread('share2.jpg');
+
+I2=imnoise(I2,'salt & pepper',0.01);
+EncoderImg=imread(Encoder);
+k=size(I);
+X=imresize(Enco,k);
+X2=imnoise(X,'salt & pepper',0.01);
+
+for i=1:k(1)
+    for j=1:k(2)
+        I(i,j)=X2(i,j)+I(i,j);
+        I2(i,j)=X2(i,j)+I2(i,j);
+    end
+end
+
+imwrite(I,'share1x.png','png');
+imwrite(I2,'share2x.png','png');
+imshow(I), figure, imshow(I2);

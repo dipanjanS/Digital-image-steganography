@@ -1,0 +1,18 @@
+function EncoderImplementer()
+%Encoder- entry point
+
+clear all;
+Source=imread('./sources/pic0.jpg');
+Encoder=imread('encrypters.jpg');
+SecretCode=input('Encoding Phase::Enter the secret code : ','s');
+Key=createKey(keyimpl(strcat(SecretCode,fliplr(SecretCode))));
+Coded(:,:,1)=encryptImage(Source(:,:,1),Key);
+Coded(:,:,2)=encryptImage(Source(:,:,2),Key);
+Coded(:,:,3)=encryptImage(Source(:,:,3),Key);
+
+[Share1(:,:,1),Share2(:,:,1)]=encodeChannel(Coded(:,:,1),Encoder(:,:,1));
+[Share1(:,:,2),Share2(:,:,2)]=encodeChannel(Coded(:,:,2),Encoder(:,:,2));
+[Share1(:,:,3),Share2(:,:,3)]=encodeChannel(Coded(:,:,3),Encoder(:,:,3));
+
+imwrite(Share1,'./trans/Share1.png');
+imwrite(Share2,'./trans/Share2.png');

@@ -1,0 +1,44 @@
+function [KeyArray]=keyimpl(SecretCode)
+SecKey=dec2bin(uint8(SecretCode),8);
+SecKeySize=size(SecKey);
+S=SecKeySize(1);
+R=rem(S,4);
+P=4-R;
+
+if R~=0
+    S1=S+P;
+    
+else
+    S1=S;
+end
+
+PaddedKey=zeros(S1,8);
+
+for i=1:SecKeySize(1)
+    for j=1:8
+        PaddedKey(i,j)=SecKey(i,j)-48;
+    end
+end
+
+
+PaddedKey=transpose(PaddedKey);
+Resized=reshape(PaddedKey,32,[]);
+Resized=transpose(Resized);
+
+rKeySize=size(Resized);
+KeyArray=zeros(1,32);
+
+for i=1:rKeySize(1)/2
+    for j=1:rKeySize(2)
+        KeyArray(1,j)=bitxor(Resized(i,j),Resized(i+1,j));
+    end
+end
+
+        
+for i=31:2
+    KeyArray(1,i)=bitxor(KeyArray(1,i+1),KeyArray(1,i));
+end
+   
+for i=:2
+    KeyArray(1,i)=bitxor(KeyArray(1,i+1),KeyArray(1,i));
+end
