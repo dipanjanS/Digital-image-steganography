@@ -1,8 +1,8 @@
 <h1>Digital-image-steganography</h1>
 <hr>
 <br>
+<br>
 
-<br><br><br>
 <h3>Abstract</h3>
 <hr>
 
